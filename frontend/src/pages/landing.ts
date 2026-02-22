@@ -37,6 +37,9 @@ export async function mountLanding(container: HTMLElement) {
             <button class="btn btn-primary btn-lg" id="l-start">
               Build my clone →
             </button>
+            <button class="btn btn-glass" id="l-demo">
+              Try a real clone first
+            </button>
             <span class="hero-disclaimer">free · no app · takes 60 seconds</span>
           </div>
 
@@ -75,6 +78,7 @@ export async function mountLanding(container: HTMLElement) {
   container.querySelector('#l-login')!.addEventListener('click', () => navigate('/auth'))
   container.querySelector('#l-signup')!.addEventListener('click', () => navigate('/auth?mode=signup'))
   container.querySelector('#l-start')!.addEventListener('click', () => navigate('/auth?mode=signup'))
+  container.querySelector('#l-demo')!.addEventListener('click', () => navigate('/demo'))
 
   injectLandingStyles()
 }

@@ -4,6 +4,7 @@ import { mountLanding } from './pages/landing.js'
 import { mountAuth } from './pages/auth.js'
 import { mountImport } from './pages/import.js'
 import { mountChat } from './pages/chat.js'
+import { mountDemo } from './pages/demo.js'
 
 // ── Toast system (exported for components) ────────────────────────────────────
 let toastContainer: HTMLElement | null = null
@@ -34,6 +35,7 @@ addRoute('/', mountLanding)
 addRoute('/auth', mountAuth)
 addRoute('/import', mountImport)
 addRoute('/chat', mountChat)
+addRoute('/demo', mountDemo)
 
 // ── Start ──────────────────────────────────────────────────────────────────────
 startRouter()

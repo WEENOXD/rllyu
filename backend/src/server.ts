@@ -9,6 +9,7 @@ import { authRoutes } from './routes/auth.js'
 import { importRoutes } from './routes/import.js'
 import { aiRoutes } from './routes/ai.js'
 import { chatRoutes } from './routes/chat.js'
+import { demoRoutes } from './routes/demo.js'
 
 // ── Env validation ──────────────────────────────────────────────────────────
 const required = ['OPENAI_API_KEY', 'SESSION_SECRET', 'DATABASE_URL']
@@ -71,6 +72,7 @@ await app.register(authRoutes, { prefix: '/api/auth' })
 await app.register(importRoutes, { prefix: '/api/import' })
 await app.register(aiRoutes, { prefix: '/api/ai' })
 await app.register(chatRoutes, { prefix: '/api/chat' })
+await app.register(demoRoutes, { prefix: '/api/demo' })
 
 // Health check
 app.get('/health', () => ({ ok: true, ts: Date.now() }))
