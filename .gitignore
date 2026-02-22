@@ -31,3 +31,7 @@ logs/
 
 # fly.io
 .fly/
+
+# Local Netlify folder
+.netlify
+seed-demo.ts
