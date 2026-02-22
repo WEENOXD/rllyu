@@ -1,0 +1,89 @@
+/* ── rllyU Design Tokens ─────────────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --c-bg:            #080808;
+  --c-bg-2:          #0f0f0f;
+  --c-surface:       rgba(255, 255, 255, 0.06);
+  --c-surface-hover: rgba(255, 255, 255, 0.09);
+  --c-glass:         rgba(255, 255, 255, 0.10);
+  --c-glass-strong:  rgba(255, 255, 255, 0.14);
+  --c-border:        rgba(255, 255, 255, 0.10);
+  --c-border-strong: rgba(255, 255, 255, 0.18);
+
+  --c-text:          #f0f0f0;
+  --c-text-2:        rgba(255, 255, 255, 0.60);
+  --c-text-3:        rgba(255, 255, 255, 0.35);
+  --c-text-inv:      #080808;
+
+  --c-accent:        #ffffff;
+  --c-accent-dim:    rgba(255, 255, 255, 0.80);
+  --c-danger:        rgba(255, 80, 80, 0.90);
+  --c-success:       rgba(80, 220, 140, 0.90);
+
+  /* Bubble colors */
+  --c-bubble-clone:  rgba(255, 255, 255, 0.09);
+  --c-bubble-user:   rgba(255, 255, 255, 0.96);
+
+  /* Glass effect */
+  --blur-sm:    blur(12px) saturate(160%);
+  --blur-md:    blur(20px) saturate(180%);
+  --blur-lg:    blur(32px) saturate(200%);
+
+  /* Borders */
+  --glass-border: 1px solid var(--c-border);
+  --glass-border-strong: 1px solid var(--c-border-strong);
+
+  /* Shadows */
+  --shadow-sm:  0 2px 8px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.05);
+  --shadow-md:  0 8px 32px rgba(0,0,0,.60), 0 0 0 1px rgba(255,255,255,.07);
+  --shadow-lg:  0 20px 60px rgba(0,0,0,.80), 0 0 0 1px rgba(255,255,255,.08);
+
+  /* Specular highlight (top edge glow on cards) */
+  --specular: linear-gradient(
+    180deg,
+    rgba(255,255,255,.15) 0%,
+    rgba(255,255,255,.04) 40%,
+    transparent 100%
+  );
+
+  /* Radii */
+  --r-sm:     10px;
+  --r-md:     16px;
+  --r-lg:     22px;
+  --r-xl:     32px;
+  --r-pill:   999px;
+
+  /* Bubble radii */
+  --r-bubble-clone: 4px 18px 18px 18px;
+  --r-bubble-user:  18px 4px 18px 18px;
+
+  /* Typography */
+  --font:       'Inter', system-ui, sans-serif;
+  --t-xs:       11px;
+  --t-sm:       13px;
+  --t-base:     15px;
+  --t-md:       17px;
+  --t-lg:       22px;
+  --t-xl:       32px;
+  --t-2xl:      48px;
+  --t-3xl:      72px;
+
+  /* Spacing */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-8:  32px;
+  --sp-10: 40px;
+  --sp-12: 48px;
+  --sp-16: 64px;
+
+  /* Transitions */
+  --ease:      cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:   cubic-bezier(0.4, 0, 1, 1);
+  --dur-fast:  120ms;
+  --dur-mid:   240ms;
+  --dur-slow:  400ms;
+}

@@ -1,0 +1,33 @@
+# env — NEVER commit
+.env
+.env.*
+!.env.example
+
+# deps
+node_modules/
+
+# build output
+dist/
+build/
+
+# prisma
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# OS
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
+logs/
+
+# editor
+.vscode/
+.idea/
+*.swp
+
+# fly.io
+.fly/

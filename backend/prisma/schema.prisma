@@ -1,0 +1,72 @@
+// To switch to Postgres, change provider to "postgresql" and update DATABASE_URL
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String        @id @default(cuid())
+  email           String        @unique
+  passwordHash    String
+  plan            String        @default("free") // "free" | "pro"
+  cloneReplyCount Int           @default(0)
+  createdAt       DateTime      @default(now())
+
+  datasets     Dataset[]
+  cloneProfile CloneProfile?
+  chatSessions ChatSession[]
+}
+
+model Dataset {
+  id         String     @id @default(cuid())
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  sourceType String     // "paste" | "upload"
+  createdAt  DateTime   @default(now())
+
+  messages MessageRow[]
+}
+
+model MessageRow {
+  id        String    @id @default(cuid())
+  datasetId String
+  dataset   Dataset   @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+  timestamp DateTime?
+  author    String?
+  text      String
+  hash      String    @unique
+}
+
+model CloneProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  styleSummary String
+  quirksJson   String   // JSON string
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ChatSession {
+  id        String      @id @default(cuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String      @default("New Chat")
+  createdAt DateTime    @default(now())
+
+  messages ChatMessage[]
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  role      String      // "user" | "clone" | "system"
+  content   String
+  createdAt DateTime    @default(now())
+}

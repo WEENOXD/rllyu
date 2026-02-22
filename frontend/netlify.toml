@@ -1,0 +1,21 @@
+[build]
+  base    = "frontend"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Proxy /api/* → backend so the key never hits the browser
+# Replace the `to` URL with your deployed backend after fly deploy
+[[redirects]]
+  from   = "/api/*"
+  to     = "https://rllyu-backend.fly.dev/api/:splat"
+  status = 200
+  force  = true
+
+# SPA fallback — all routes serve index.html
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
