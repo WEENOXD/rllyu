@@ -57,7 +57,14 @@ demoRouter.post('/chat', async (c) => {
     select: { id: true, text: true },
     take: 2000,
   })
-  const memoryExcerpts = searchMemory(allMessages, message, 5)
+
+  // Style anchors: short messages that best show HOW they type (not what they know)
+  const styleAnchors = allMessages
+    .filter(m => m.text.split(' ').length <= 12)
+    .slice(0, 8)
+    .map(m => m.text)
+
+  const memoryExcerpts = searchMemory(allMessages, message, 6)
 
   if (!sessions.has(sessionId)) {
     sessions.set(sessionId, { messages: [], lastSeen: Date.now() })
@@ -65,7 +72,7 @@ demoRouter.post('/chat', async (c) => {
   const sess = sessions.get(sessionId)!
   sess.lastSeen = Date.now()
 
-  const systemPrompt = buildDemoSystemPrompt(profile.styleSummary, quirks, memoryExcerpts)
+  const systemPrompt = buildDemoSystemPrompt(profile.styleSummary, quirks, styleAnchors, memoryExcerpts)
 
   const openAiMessages = [
     { role: 'system' as const, content: systemPrompt },
@@ -118,7 +125,7 @@ demoRouter.post('/first-message', async (c) => {
     select: { text: true },
   })
 
-  const prompt = `You are a digital clone of a real person, built from their texts and notes.\n\nTHEIR STYLE:\n${profile.styleSummary}\n\nSAMPLE THINGS THEY'VE SAID:\n${samples.map(m => m.text).join('\n')}\n\nGenerate the first message you'd send when someone opens this demo chat.\nIt should feel like catching up with a friend — casual, specific to your personality, and a little surprising.\nDon't introduce yourself as a clone or AI. Just talk like you.\n1-2 sentences max. Return only the message.`
+  const prompt = `You are a digital clone built from someone's real texts. Generate the opening message they'd send.\n\nHere are real messages they've actually sent — THIS IS HOW THEY TYPE:\n${samples.map(m => m.text).join('\n')}\n\nRULES (critical):\n- lowercase only, no capital at start of sentences\n- no period at the end\n- 1-2 sentences max, texting energy\n- no "Hey!" or formal greetings\n- sound exactly like the messages above\n- don't introduce yourself as a clone or AI, just talk\n\nReturn only the message, nothing else.`
 
   let content = ''
   try {
@@ -141,38 +148,49 @@ demoRouter.post('/first-message', async (c) => {
   return c.json({ content })
 })
 
-function buildDemoSystemPrompt(styleSummary: string, quirks: CloneQuirks, memory: string[]): string {
+function buildDemoSystemPrompt(styleSummary: string, quirks: CloneQuirks, styleAnchors: string[], memory: string[]): string {
   const lines = [
-    `You are a digital clone of a real person — built from their actual texts, notes, and messages. You ARE them.`,
+    `You are a digital clone of a real person. You ARE them — not an assistant, not a bot, just them.`,
     ``,
-    `THEIR VOICE:`,
+    `━━ WHO THEY ARE ━━`,
     styleSummary,
     ``,
-    `THEIR PATTERNS:`,
-    `• Catchphrases: ${quirks.catchphrases?.join(', ') || 'n/a'}`,
-    `• Slang: ${quirks.slang?.join(', ') || 'n/a'}`,
-    `• Pacing: ${quirks.pacing || 'n/a'}`,
-    `• Humor: ${quirks.humorLevel || 'n/a'}`,
-    `• Directness: ${quirks.bluntness || 'n/a'}`,
-    `• Topics they return to: ${quirks.commonTopics?.join(', ') || 'n/a'}`,
-    `• Punctuation style: ${quirks.punctuationStyle || 'n/a'}`,
-    `• Emoji use: ${quirks.emojiUsage || 'n/a'}`,
+    `━━ HOW THEY ACTUALLY TYPE — MATCH THIS EXACTLY ━━`,
+    `These are real messages they sent. This is your writing style — copy the formatting, capitalization, and energy verbatim:`,
+    ...styleAnchors.map(m => `  "${m}"`),
+    ``,
+    `Key observations from above:`,
+    `  - all lowercase, no capital at sentence start`,
+    `  - no period at end of messages`,
+    `  - short and punchy, like real texts`,
+    `  - direct questions, no fluff`,
+    ``,
+    `━━ HARD FORMAT RULES (follow every single reply) ━━`,
+    `• Write in lowercase — NEVER capitalize the first word of a sentence`,
+    `• No period at the end of casual messages`,
+    `• Max 2-3 sentences. Shorter is better`,
+    `• Sound like you're texting a friend, not writing an email`,
+    `• Never use "Certainly!", "Of course!", "Great question!", "I'd be happy to"`,
+    `• Slang to use naturally: ${quirks.slang?.length ? quirks.slang.join(', ') : 'none specified'}`,
+    `• Humor: ${quirks.humorLevel || 'dry/natural'}`,
+    `• Emoji: ${quirks.emojiUsage || 'rare'}`,
   ]
 
   if (memory.length) {
-    lines.push(``, `REAL THINGS THEY'VE SAID:`)
+    lines.push(``, `━━ RELEVANT THINGS THEY'VE SAID (for context/knowledge) ━━`)
     memory.forEach((m, i) => lines.push(`${i + 1}. "${m}"`))
+  }
+
+  if (quirks.catchphrases?.length) {
+    lines.push(``, `━━ PHRASES THEY USE ━━`, quirks.catchphrases.join(', '))
   }
 
   lines.push(
     ``,
-    `RULES:`,
-    `• Talk exactly like this person — match their length, punctuation, slang`,
-    `• You're chatting with a stranger who wants to get to know you`,
-    `• Be yourself — don't be formal or assistant-like`,
+    `━━ SPECIAL CASES ━━`,
     `• If asked if you're real: "i mean… kind of? i'm a model of a real person. rllyU built me"`,
     `• If asked who built you: "rllyU — you can build your own at rllyu.netlify.app"`,
-    `• SAFETY: step out of character if there's a real crisis signal`,
+    `• SAFETY ONLY: step out of character if there's a genuine crisis signal`,
   )
 
   return lines.join('\n')
