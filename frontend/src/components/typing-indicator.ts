@@ -1,36 +1,37 @@
-/** Animated typing indicator bubble — renders into a container */
+/** Animated typing indicator — works with the messages-inner wrapper */
 
 export function createTypingIndicator(): HTMLElement {
   const el = document.createElement('div')
-  el.className = 'bubble bubble-clone typing-bubble fade-up'
-  el.innerHTML = `<div class="dot-pulse"><span></span><span></span><span></span></div>`
+  el.className = 'bubble bubble-clone typing-bubble'
+  el.innerHTML = `
+    <span class="tdot"></span>
+    <span class="tdot"></span>
+    <span class="tdot"></span>
+  `
   return el
 }
 
-/**
- * Show a typing indicator, then reveal the message after a human-ish delay.
- * Returns a cleanup function.
- */
 export async function simulateTyping(
-  container: HTMLElement,
+  messagesEl: HTMLElement,
   onReveal: (text: string) => void,
   text: string,
 ): Promise<void> {
+  const inner = messagesEl.querySelector<HTMLElement>('.messages-inner') ?? messagesEl
   const indicator = createTypingIndicator()
-  container.appendChild(indicator)
-  container.scrollTop = container.scrollHeight
+  inner.appendChild(indicator)
+  autoScroll(messagesEl)
 
-  // Typing duration: base + per-char, clamped to feel natural
-  const wpm = 60 + Math.random() * 40 // 60–100 WPM
+  const wpm = 60 + Math.random() * 40
   const msPerWord = 60000 / wpm
   const wordCount = text.split(' ').length
-  const duration = Math.min(Math.max(wordCount * msPerWord, 800), 3200)
+  const duration = Math.min(Math.max(wordCount * msPerWord, 800), 3000)
 
-  await sleep(duration)
+  await new Promise(r => setTimeout(r, duration))
   indicator.remove()
   onReveal(text)
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms))
+export function autoScroll(el: HTMLElement) {
+  const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 140
+  if (nearBottom) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
 }
