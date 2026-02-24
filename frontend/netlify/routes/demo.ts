@@ -130,7 +130,7 @@ demoRouter.post('/first-message', async (c) => {
       max_tokens: 80,
       temperature: 0.88,
     })
-    content = completion.choices[0]?.message?.content?.trim() ?? fp.styleAnchors[0] ?? 'yo'
+    content = (completion.choices[0]?.message?.content?.trim() ?? fp.styleAnchors[0] ?? 'yo').replace(/^["']|["']$/g, '')
   } catch {
     content = fp.styleAnchors[0] ?? "okay this is weird"
   }

@@ -235,7 +235,7 @@ aiRouter.post('/first-message', async (c) => {
       max_tokens: 100,
       temperature: 0.85,
     })
-    content = completion.choices[0]?.message?.content?.trim() ?? '…'
+    content = (completion.choices[0]?.message?.content?.trim() ?? '…').replace(/^["']|["']$/g, '')
   } catch {
     content = fp.styleAnchors[0] ?? 'okay this is weird'
   }
